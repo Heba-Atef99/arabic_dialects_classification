@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <title>NLP Project</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="container mt-5 pt-5">
+        <h1>NLP Project</h1>
+        <p id="initial"></p>
+        <div class="input-group mb-3 mt-5">
+            <input type="text" class="form-control" id="text" placeholder="اكتب هنا" aria-label="اكتب هنا" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="predict()">اعرف اللهجة</button>
+        </div>
+        <p class="text-center bg-success text-white font-weight-bold display-5" id="prediction"></p>
+    </div>
+    <script>
+        function predict() {
+            var text = document.getElementById('text').value
+            console.log(JSON.stringify({
+                    "text": text
+                }))
+            fetch("http://127.0.0.1:8004/predict", {
+                method: "POST",
+                headers: { 
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({
+                    "text": text
+                })
+            })
+            .then((response) => response.json())
+            .then((json) => document.getElementById('prediction').innerText = json['prediction']);
+        }
+
+
+        (function () {
+            fetch("http://127.0.0.1:8004", {
+                method: "GET"
+            })
+            .then((response) => response.json())
+            .then((json) => document.getElementById('initial').innerText = json['message']);
+        })();
+    </script>
+</body>
+</html>
